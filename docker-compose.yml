@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: app-api
+    tty: true
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  database:
+    image: postgres:15
+    container_name: app-database
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "${DATABASE_PORT}:5432"
+    environment:
+      POSTGRES_DB: "${DATABASE_NAME}"
+      POSTGRES_USER: "${DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      TZ: "UTC"
+    networks:
+      - app-network
+
+volumes:
+  database-data:
+
+networks:
+  app-network:
+    driver: bridge

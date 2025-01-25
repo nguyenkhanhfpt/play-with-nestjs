@@ -33,8 +33,24 @@ services:
     networks:
       - app-network
 
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - GATEWAY_LISTEN=0.0.0.0:4566
+    volumes:
+      - localstack-data:/var/lib/localstack # Persist data
+      - localstack-docker-sock:/var/run/docker.sock
+    networks:
+      - app-network
+
 volumes:
   database-data:
+  localstack-data:
+  localstack-docker-sock:
 
 networks:
   app-network:

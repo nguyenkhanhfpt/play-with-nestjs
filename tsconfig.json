@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@*": ["./src/*"],
-    },
-    "exclude": ["*.test.ts", "*.spec.ts"]
-  }
+    }
+  },
+  "exclude": ["*.test.ts", "*.spec.ts"]
 }

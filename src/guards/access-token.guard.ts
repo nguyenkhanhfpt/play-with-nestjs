@@ -1,4 +1,3 @@
-// import { IS_PUBLIC_KEY } from '@decorators';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,7 +18,10 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (isPublic) return true;
+
+    if (isPublic) {
+      return true;
+    }
 
     await super.canActivate(context);
 

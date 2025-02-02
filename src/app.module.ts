@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '@modules/auth/auth.module';
 import databaseConfig from '@config/database.config';
 import appConfig from '@config/app.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from '@guards';
 
 @Module({
   imports: [
@@ -24,6 +26,12 @@ import appConfig from '@config/app.config';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

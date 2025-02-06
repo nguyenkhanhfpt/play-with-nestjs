@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from '@modules/auth/dtos/req/login.dto';
 import { RegisterDto } from '@modules/auth/dtos/req/register.dto';
-import { Public } from '@decorators';
+import { Public, User } from '@decorators';
+import { RefreshTokenGuard } from '@guards';
 
 @Controller('auth')
 export class AuthController {
@@ -25,9 +26,16 @@ export class AuthController {
     return 'Logout';
   }
 
+  /**
+   * Refresh token
+   * @param user
+   */
   @Public()
+  @UseGuards(RefreshTokenGuard)
   @Get('refresh')
-  refresh() {
-    return 'Refresh';
+  refresh(@User() user: any) {
+    const { refreshToken, email } = user;
+
+    return this.authService.refresh(email, refreshToken);
   }
 }

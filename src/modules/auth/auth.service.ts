@@ -61,10 +61,21 @@ export class AuthService {
     return true;
   }
 
-  refresh() {
-    console.log('refresh');
+  /**
+   * Refresh access token
+   * @param email
+   * @param refreshToken
+   */
+  async refresh(email: string, refreshToken: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    const { accessToken } = await this.getTokens(user);
 
-    return true;
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   /**

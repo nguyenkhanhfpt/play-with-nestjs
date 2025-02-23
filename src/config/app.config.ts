@@ -8,4 +8,9 @@ export default registerAs('app', () => ({
     refreshSecret: process.env.JWT_REFRESH_SECRET,
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   },
+  queue: {
+    host: process.env.QUEUE_HOST,
+    port: parseInt(process.env.QUEUE_PORT, 10),
+    password: process.env.QUEUE_PASSWORD,
+  },
 }));

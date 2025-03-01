@@ -3,11 +3,27 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: development
+      target: production
     container_name: app-api
     tty: true
     ports:
       - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - database
+    networks:
+      - app-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: app-worker
+    tty: true
     volumes:
       - .:/app
     env_file:

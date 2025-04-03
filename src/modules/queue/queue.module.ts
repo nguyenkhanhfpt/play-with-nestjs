@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { QueueProcessor } from '@modules/queue/processors/queue.processor';
-import { QueueListener } from '@modules/queue/listeners/queue.listener';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DEFAULT_QUEUE_NAME } from '@shared/constants';
 
 @Module({
   imports: [
@@ -17,7 +16,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
       }),
     }),
+    BullModule.registerQueue({
+      name: DEFAULT_QUEUE_NAME, // register a queue with the name 'default'
+    }),
   ],
-  providers: [QueueProcessor, QueueListener],
+  exports: [BullModule],
 })
 export class QueueModule {}

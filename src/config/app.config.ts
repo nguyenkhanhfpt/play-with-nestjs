@@ -13,4 +13,10 @@ export default registerAs('app', () => ({
     port: parseInt(process.env.QUEUE_PORT, 10),
     password: process.env.QUEUE_PASSWORD,
   },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10),
+    password: process.env.REDIS_PASSWORD,
+    ttl: parseInt(process.env.REDIS_TTL, 10),
+  },
 }));

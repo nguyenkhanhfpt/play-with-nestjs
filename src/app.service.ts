@@ -8,8 +8,6 @@ export class AppService {
   constructor(@InjectQueue(DEFAULT_QUEUE_NAME) private queue: Queue) {}
 
   getHello(): string {
-    this.queue.add('test', { test: 'test' });
-
     return 'Hello World!';
   }
 }

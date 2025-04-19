@@ -23,8 +23,8 @@ export class UsersService {
   async findOne(id: number) {
     return this.userRepository.findOneOrFail({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 

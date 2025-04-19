@@ -5,10 +5,10 @@ import { AccessTokenStrategy } from '@modules/auth/strategies/access-token.strat
 import { RefreshTokenStrategy } from '@modules/auth/strategies/refresh-token.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '@database/entities/user.entity';
+import { UserEntity } from '@database/entities/user.entity';
 
 @Module({
-  imports: [JwtModule.register({}), TypeOrmModule.forFeature([User])],
+  imports: [JwtModule.register({}), TypeOrmModule.forFeature([UserEntity])],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
 })

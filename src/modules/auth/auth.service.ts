@@ -3,7 +3,7 @@ import { LoginDto } from '@modules/auth/dtos/req/login.dto';
 import { RegisterDto } from '@modules/auth/dtos/req/register.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@database/entities/user.entity';
+import { UserEntity } from '@database/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { comparePassword, hashPassword } from '@shared/utils';
@@ -14,7 +14,8 @@ import { comparePassword, hashPassword } from '@shared/utils';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -82,7 +83,7 @@ export class AuthService {
    * Generate access and refresh tokens
    * @param user
    */
-  async getTokens(user: User) {
+  async getTokens(user: UserEntity) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

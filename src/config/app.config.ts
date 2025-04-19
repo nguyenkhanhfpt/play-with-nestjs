@@ -19,4 +19,5 @@ export default registerAs('app', () => ({
     password: process.env.REDIS_PASSWORD,
     ttl: parseInt(process.env.REDIS_TTL, 10),
   },
+  fallbackLanguage: process.env.FALLBACK_LANGUAGE,
 }));

@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
+import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
 import { LoggerOptions as TypeOrmLoggerOptions } from 'typeorm/logger/LoggerOptions';
-import { QueryRunner, Logger as TypeOrmLogger } from 'typeorm';
 
 export class TypeOrmLoggerContainer implements TypeOrmLogger {
   constructor(
@@ -30,7 +30,8 @@ export class TypeOrmLoggerContainer implements TypeOrmLogger {
         (parameters && parameters.length
           ? ' -- PARAMETERS: ' + this.stringifyParams(parameters)
           : '');
-      this._logger.log('query' + ': ' + sql, 'QUERY');
+
+      this._logger.log('query' + ': ' + sql.replaceAll('\"', '`'), 'QUERY');
     }
   }
 
@@ -48,7 +49,10 @@ export class TypeOrmLoggerContainer implements TypeOrmLogger {
         (parameters && parameters.length
           ? ' -- PARAMETERS: ' + this.stringifyParams(parameters)
           : '');
-      this._logger.error('query failed: ' + sql, 'QUERY ERROR');
+      this._logger.error(
+        'query failed: ' + sql.replaceAll('\"', '`'),
+        'QUERY ERROR',
+      );
       this._logger.error('error:', error);
     }
   }
@@ -62,7 +66,10 @@ export class TypeOrmLoggerContainer implements TypeOrmLogger {
       (parameters && parameters.length
         ? ' -- PARAMETERS: ' + this.stringifyParams(parameters)
         : '');
-    this._logger.warn('query is slow: ' + sql, 'QUERY SLOW');
+    this._logger.warn(
+      'query is slow: ' + sql.replaceAll('\"', '`'),
+      'QUERY SLOW',
+    );
     this._logger.warn('execution time: ' + time);
   }
 

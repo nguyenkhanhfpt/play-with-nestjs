@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from '@app.controller';
 import { AppService } from '@app.service';
 import { UsersModule } from '@modules/users/users.module';
@@ -12,6 +12,8 @@ import { AccessTokenGuard } from '@guards';
 import { QueueModule } from '@modules/queue/queue.module';
 import { HeaderResolver, I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
+import { LoggerModule } from '@modules/logger/logger.module';
+import { LoggerMiddleware } from '@shared/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { join } from 'path';
       useFactory: (configService: ConfigService) =>
         configService.get('database'),
     }),
+    LoggerModule,
     UsersModule,
     AuthModule,
     QueueModule,
@@ -49,4 +52,8 @@ import { join } from 'path';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

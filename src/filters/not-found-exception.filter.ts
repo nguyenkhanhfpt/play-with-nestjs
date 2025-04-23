@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { errorCodeConstant } from '@shared/constants/error-code.constant';
-// import { ErrorDto } from '@shared/dtos/error.dto';
+import { ErrorDto } from '@shared/dtos/error.dto';
 import { t } from '@shared/utils';
 import type { Response } from 'express';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
@@ -33,7 +33,7 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     const status = HttpStatus.NOT_FOUND;
     const code = errorCodeConstant.notFound;
     const message = t(`error.${code}`) || exception.message;
-    const error = {
+    const error: ErrorDto = {
       code,
       message,
       resource: this.isNotFoundException(exception) ? exception.message : null,

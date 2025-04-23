@@ -40,7 +40,7 @@ export class LoggerService {
       functionName: trace.functionName,
       caller: `${trace.fileName}:${trace.lineNumber}:${trace.columnNumber}`,
       requestId: this.cls.getId(),
-      resource: "APP API",
+      resource: 'APP API',
       errorCode,
     };
 

@@ -95,8 +95,8 @@ const boolProperties = ['topLevel', 'eval', 'native', 'constructor'];
 strProperties.forEach(function (property) {
   CallSite.prototype[property] = null;
   CallSite.prototype[
-  'get' + property[0].toUpperCase() + property.substring(1)
-    ] = function () {
+    'get' + property[0].toUpperCase() + property.substring(1)
+  ] = function () {
     return this[property];
   };
 });

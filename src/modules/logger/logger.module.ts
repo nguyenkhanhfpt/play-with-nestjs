@@ -3,7 +3,6 @@ import { loggerOptionsConstant } from './logger.constant';
 import { WinstonModule } from 'nest-winston';
 
 import { LoggerService } from './logger.service';
-import { ClsService } from 'nestjs-cls';
 
 @Global()
 @Module({
@@ -13,7 +12,7 @@ import { ClsService } from 'nestjs-cls';
       useFactory: () => loggerOptionsConstant,
     }),
   ],
-  providers: [LoggerService, ClsService],
+  providers: [LoggerService],
   exports: [LoggerService],
 })
 export class LoggerModule {}

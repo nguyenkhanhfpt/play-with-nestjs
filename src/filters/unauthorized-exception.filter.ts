@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { errorCodeConstant } from '@shared/constants/error-code.constant';
-// import { BaseErrorDto } from '@shared/dtos/base-error.dto';
+import { BaseErrorDto } from '@shared/dtos/base-error.dto';
 import { t } from '@shared/utils';
 import type { Response } from 'express';
 
@@ -27,7 +27,7 @@ export class UnauthorizedExceptionFilter
     const status = HttpStatus.UNAUTHORIZED;
     const code = errorCodeConstant.unauthorized;
     const message = t(`error.${code}`);
-    const error = {
+    const error: BaseErrorDto = {
       code,
       message,
     };

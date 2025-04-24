@@ -31,6 +31,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
       | BadRequestErrorDto;
     let errors: BadRequestErrorDto[] = [];
     const messages = exceptionRes?.message as ValidationError[];
+
     if (isArray(messages)) {
       if (messages.some((msg) => msg instanceof ValidationError)) {
         errors = this.buildErrorMessage(messages);

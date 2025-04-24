@@ -33,12 +33,10 @@ export class UnauthorizedExceptionFilter
     };
 
     exception.message = message;
-
     this.loggerService.logErrorDetail(
       exception,
       errorCodeConstant.unauthorized,
     );
-
     response.status(status).json(error);
   }
 }

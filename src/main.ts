@@ -6,6 +6,7 @@ import { LoggerService } from '@modules/logger/logger.service';
 import { UnauthorizedExceptionFilter } from '@filters/unauthorized-exception.filter';
 import { InternalServerExceptionFilter } from '@filters/internal-server-exception.filter';
 import { BadRequestExceptionFilter } from '@filters/bad-request-exception.filter';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -16,6 +17,14 @@ async function bootstrap() {
 
   // Apply winston logger for app.
   app.useLogger(logger);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      exceptionFactory: (errors) => new BadRequestException(errors),
+    }),
+  );
 
   app.useGlobalFilters(
     new InternalServerExceptionFilter(loggerService),

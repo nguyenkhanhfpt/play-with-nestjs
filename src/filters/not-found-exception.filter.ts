@@ -40,7 +40,6 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     };
 
     exception.message = message;
-
     this.loggerService.logErrorDetail(
       exception,
       errorCodeConstant.notFound,

@@ -38,7 +38,6 @@ export class InternalServerExceptionFilter implements ExceptionFilter {
       exception,
       errorCodeConstant.internalServerError,
     );
-
     response.status(status).json(error);
   }
 }

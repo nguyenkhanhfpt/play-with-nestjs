@@ -20,4 +20,7 @@ export default registerAs('app', () => ({
     ttl: parseInt(process.env.REDIS_TTL, 10),
   },
   fallbackLanguage: process.env.FALLBACK_LANGUAGE,
+  corsOrigin: process.env.CORS_ORIGIN,
+  apiPrefix: process.env.API_PREFIX,
+  apiVersion: process.env.API_VERSION,
 }));

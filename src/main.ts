@@ -6,7 +6,15 @@ import { LoggerService } from '@modules/logger/logger.service';
 import { UnauthorizedExceptionFilter } from '@filters/unauthorized-exception.filter';
 import { InternalServerExceptionFilter } from '@filters/internal-server-exception.filter';
 import { BadRequestExceptionFilter } from '@filters/bad-request-exception.filter';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ValidationPipe,
+  RequestMethod,
+  VersioningType,
+} from '@nestjs/common';
+import helmet from 'helmet';
+import { ConfigService } from '@nestjs/config';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -18,6 +26,40 @@ async function bootstrap() {
   // Apply winston logger for app.
   app.useLogger(logger);
 
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  const configService = app.get(ConfigService);
+  const corsOrigin = configService.getOrThrow<string>('app.corsOrigin', {
+    infer: true,
+  });
+
+  // Setup security headers
+  app.use(helmet());
+  app.enableCors({
+    origin: corsOrigin.split(','),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Timezone, Authorization',
+    credentials: true,
+  });
+
+  // Use global prefix if you don't have subdomain
+  app.setGlobalPrefix(
+    configService.getOrThrow<string>('app.apiPrefix', {
+      infer: true,
+    }),
+    {
+      exclude: [{ method: RequestMethod.GET, path: '/' }],
+    },
+  );
+
+  // Enable versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: configService.getOrThrow<string>('app.apiVersion', {
+      infer: true,
+    }),
+  });
+
+  // use global pipe
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -26,6 +68,7 @@ async function bootstrap() {
     }),
   );
 
+  // use global filters
   app.useGlobalFilters(
     new InternalServerExceptionFilter(loggerService),
     new BadRequestExceptionFilter(loggerService),

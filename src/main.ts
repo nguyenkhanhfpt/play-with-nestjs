@@ -76,6 +76,10 @@ async function bootstrap() {
     new UnauthorizedExceptionFilter(loggerService),
   );
 
-  await app.listen(4000);
+  await app.listen(
+    configService.getOrThrow<string>('app.port', {
+      infer: true,
+    }),
+  );
 }
 bootstrap();

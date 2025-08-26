@@ -15,6 +15,9 @@ import { join } from 'path';
 import { LoggerModule } from '@modules/logger/logger.module';
 import { LoggerMiddleware } from '@shared/middlewares/logger.middleware';
 import { ClsModule } from 'nestjs-cls';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { DirectiveLocation, GraphQLDirective } from 'graphql';
 
 @Module({
   imports: [
@@ -41,6 +44,19 @@ import { ClsModule } from 'nestjs-cls';
     }),
     ClsModule.forRoot({
       global: true,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      installSubscriptionHandlers: true,
+      buildSchemaOptions: {
+        directives: [
+          new GraphQLDirective({
+            name: 'upper',
+            locations: [DirectiveLocation.FIELD_DEFINITION],
+          }),
+        ],
+      },
     }),
     LoggerModule,
     UsersModule,

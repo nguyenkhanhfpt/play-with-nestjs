@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from '@app.controller';
+import { PostsModule } from '@modules/posts/posts.module';
 import { AppService } from '@app.service';
 import { UsersModule } from '@modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -62,6 +63,7 @@ import { DirectiveLocation, GraphQLDirective } from 'graphql';
     UsersModule,
     AuthModule,
     QueueModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [

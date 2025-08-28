@@ -7,6 +7,7 @@ import { UserEntity } from '@database/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { comparePassword, hashPassword } from '@shared/utils';
+import { JwtPayload } from '@modules/auth/strategies/access-token.strategy';
 
 /**
  * Auth service
@@ -87,10 +88,10 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          sub: user.id,
+          id: user.id,
           name: user.name,
           email: user.email,
-        },
+        } as JwtPayload,
         {
           secret: this.configService.get<string>('app.jwt.accessSecret'),
           expiresIn: this.configService.get<string>('app.jwt.accessExpiresIn'),
@@ -98,10 +99,10 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          sub: user.id,
+          id: user.id,
           name: user.name,
           email: user.email,
-        },
+        } as JwtPayload,
         {
           secret: this.configService.get<string>('app.jwt.refreshSecret'),
           expiresIn: this.configService.get<string>('app.jwt.refreshExpiresIn'),

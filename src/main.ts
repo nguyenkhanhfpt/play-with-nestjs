@@ -15,6 +15,7 @@ import {
 import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { useContainer } from 'class-validator';
+import { setupSwagger } from '@shared/utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -75,6 +76,9 @@ async function bootstrap() {
     new NotFoundExceptionFilter(loggerService),
     new UnauthorizedExceptionFilter(loggerService),
   );
+
+  // setup swagger
+  setupSwagger(app);
 
   await app.listen(
     configService.getOrThrow<string>('app.port', {

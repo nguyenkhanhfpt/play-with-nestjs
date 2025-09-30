@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { comparePassword, hashPassword } from '@shared/utils';
 import { JwtPayload } from '@modules/auth/strategies/access-token.strategy';
+import { GetTokenDto } from './dtos/res/login-res.dto';
 
 /**
  * Auth service
@@ -25,7 +26,7 @@ export class AuthService {
    * Login user
    * @param loginDto
    */
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto): Promise<LoginDto> {
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email },
     });
@@ -43,14 +44,14 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    return this.getTokens(user);
+    return this.getTokens(user) as unknown as LoginDto;
   }
 
   /**
    * Register user
    * @param registerDto
    */
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto): Promise<GetTokenDto> {
     registerDto.password = await hashPassword(registerDto.password);
     const user = await this.userRepository.save(registerDto);
 
@@ -68,7 +69,7 @@ export class AuthService {
    * @param email
    * @param refreshToken
    */
-  async refresh(email: string, refreshToken: string) {
+  async refresh(email: string, refreshToken: string): Promise<GetTokenDto> {
     const user = await this.userRepository.findOne({
       where: { email },
     });
@@ -84,7 +85,7 @@ export class AuthService {
    * Generate access and refresh tokens
    * @param user
    */
-  async getTokens(user: UserEntity) {
+  async getTokens(user: UserEntity): Promise<GetTokenDto> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

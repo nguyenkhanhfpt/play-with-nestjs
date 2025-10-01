@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { ApiErrorResponse, ApiGetErrorResponse } from '@decorators';
+import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
 
 @ApiBearerAuth()
 @ApiTags('Posts')
@@ -33,7 +33,7 @@ export class PostsController {
     status: 201,
     description: 'Post has been successfully created.',
   })
-  @ApiErrorResponse()
+  @ApiErrorsResponse()
   create(
     @Body() createPostDto: CreatePostDto,
     @UserDecorator('id') userId: number,
@@ -44,7 +44,7 @@ export class PostsController {
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
   @ApiResponse({ status: 200, description: 'Returns a list of all posts.' })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   findAll() {
     return this.postsService.findAll();
   }
@@ -56,7 +56,7 @@ export class PostsController {
     status: 200,
     description: 'Returns the post with the specified ID.',
   })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
   }
@@ -68,7 +68,7 @@ export class PostsController {
     status: 200,
     description: 'Post has been successfully updated.',
   })
-  @ApiErrorResponse()
+  @ApiErrorsResponse()
   update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
@@ -84,7 +84,7 @@ export class PostsController {
     status: 200,
     description: 'Post has been successfully deleted.',
   })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   remove(@Param('id') id: string, @UserDecorator() user: UserEntity) {
     return this.postsService.remove(+id, user.id);
   }

@@ -17,7 +17,7 @@ import {
   ApiResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { ApiErrorResponse, ApiGetErrorResponse } from '@decorators';
+import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -31,7 +31,7 @@ export class UsersController {
     status: 201,
     description: 'User has been successfully created.',
   })
-  @ApiErrorResponse()
+  @ApiErrorsResponse()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -39,7 +39,7 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Returns a list of all users.' })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   async findAll() {
     return this.usersService.findAll();
   }
@@ -51,7 +51,7 @@ export class UsersController {
     status: 200,
     description: 'Returns the user with the specified ID.',
   })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
@@ -63,7 +63,7 @@ export class UsersController {
     status: 200,
     description: 'User has been successfully updated.',
   })
-  @ApiErrorResponse()
+  @ApiErrorsResponse()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
@@ -75,7 +75,7 @@ export class UsersController {
     status: 200,
     description: 'User has been successfully deleted.',
   })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }

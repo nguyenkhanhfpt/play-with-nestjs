@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from '@modules/auth/dtos/req/login.dto';
 import { RegisterDto } from '@modules/auth/dtos/req/register.dto';
 import {
-  ApiErrorResponse,
-  ApiGetErrorResponse,
+  ApiErrorsResponse,
+  ApiGetErrorsResponse,
   Public,
   User,
 } from '@decorators';
@@ -28,7 +28,7 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login', description: 'User login endpoint' })
   @ApiBody({ type: LoginDto })
-  @ApiErrorResponse({
+  @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
   login(@Body() loginDto: LoginDto) {
@@ -44,7 +44,7 @@ export class AuthController {
     description: 'The user has been successfully registered.',
     type: GetTokenDto,
   })
-  @ApiErrorResponse({
+  @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
   register(@Body() registerDto: RegisterDto): Promise<GetTokenDto> {
@@ -53,7 +53,7 @@ export class AuthController {
 
   @Get('logout')
   @ApiOperation({ summary: 'Logout', description: 'User logout endpoint' })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   logout() {
     return 'Logout';
   }
@@ -74,7 +74,7 @@ export class AuthController {
     description: 'The access token has been successfully refreshed.',
     type: GetTokenDto,
   })
-  @ApiGetErrorResponse()
+  @ApiGetErrorsResponse()
   refresh(@User() user: any) {
     const { refreshToken, email } = user;
 

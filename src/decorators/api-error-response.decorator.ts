@@ -10,15 +10,15 @@ import { BaseErrorDto } from '@shared/dtos/base-error.dto';
 import { ErrorDto } from '@shared/dtos/error.dto';
 import { InternalServerErrorDto } from '@shared/dtos/internal-server-error.dto';
 
-interface ApiErrorResponseOptions {
+interface ApiErrorsResponseOptions {
   excludeBadRequest?: boolean;
   excludeUnauthorized?: boolean;
   excludeNotFound?: boolean;
   excludeInternalServerError?: boolean;
 }
 
-export function ApiErrorResponse(
-  options: ApiErrorResponseOptions = {},
+export function ApiErrorsResponse(
+  options: ApiErrorsResponseOptions = {},
 ): MethodDecorator {
   const decorators = [];
 
@@ -61,6 +61,6 @@ export function ApiErrorResponse(
   return applyDecorators(...decorators);
 }
 
-export function ApiGetErrorResponse() {
-  return ApiErrorResponse({ excludeBadRequest: true });
+export function ApiGetErrorsResponse() {
+  return ApiErrorsResponse({ excludeBadRequest: true });
 }

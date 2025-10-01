@@ -12,12 +12,28 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { User as UserDecorator } from '@decorators/user.decorator';
 import { UserEntity } from '@database/entities/user.entity';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
+import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
 
+@ApiBearerAuth()
+@ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new post' })
+  @ApiResponse({
+    status: 201,
+    description: 'Post has been successfully created.',
+  })
+  @ApiErrorsResponse()
   create(
     @Body() createPostDto: CreatePostDto,
     @UserDecorator('id') userId: number,
@@ -26,16 +42,33 @@ export class PostsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all posts' })
+  @ApiResponse({ status: 200, description: 'Returns a list of all posts.' })
+  @ApiGetErrorsResponse()
   findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a post by ID' })
+  @ApiParam({ name: 'id', description: 'Post ID', example: '1' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the post with the specified ID.',
+  })
+  @ApiGetErrorsResponse()
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a post' })
+  @ApiParam({ name: 'id', description: 'Post ID', example: '1' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post has been successfully updated.',
+  })
+  @ApiErrorsResponse()
   update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
@@ -45,6 +78,13 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a post' })
+  @ApiParam({ name: 'id', description: 'Post ID', example: '1' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post has been successfully deleted.',
+  })
+  @ApiGetErrorsResponse()
   remove(@Param('id') id: string, @UserDecorator() user: UserEntity) {
     return this.postsService.remove(+id, user.id);
   }

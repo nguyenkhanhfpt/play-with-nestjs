@@ -8,8 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
+import { UpdatePostDto } from './dto/req/update-post.dto';
 import { User as UserDecorator } from '@decorators/user.decorator';
 import { UserEntity } from '@database/entities/user.entity';
 import {
@@ -20,6 +19,8 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
+import { CreatePostDto } from './dto/req/create-post.dto';
+import { PostItemDto } from './dto/res/post-res.dto';
 
 @ApiBearerAuth()
 @ApiTags('Posts')
@@ -43,10 +44,14 @@ export class PostsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
-  @ApiResponse({ status: 200, description: 'Returns a list of all posts.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of all posts.',
+    type: [PostItemDto],
+  })
   @ApiGetErrorsResponse()
-  findAll() {
-    return this.postsService.findAll();
+  findAll(): Promise<PostItemDto[]> {
+    return this.postsService.getPostList();
   }
 
   @Get(':id')
@@ -55,10 +60,11 @@ export class PostsController {
   @ApiResponse({
     status: 200,
     description: 'Returns the post with the specified ID.',
+    type: PostItemDto,
   })
   @ApiGetErrorsResponse()
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<PostItemDto> {
+    return this.postsService.getPostDetail(+id);
   }
 
   @Patch(':id')

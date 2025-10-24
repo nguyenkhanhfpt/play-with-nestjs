@@ -8,7 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { comparePassword, hashPassword } from '@shared/utils';
 import { JwtPayload } from '@modules/auth/strategies/access-token.strategy';
-import { GetTokenDto } from './dtos/res/login-res.dto';
+import { GetTokenDto, LoginResDto } from './dtos/res/login-res.dto';
+import { GetUserResDto } from './dtos/res';
+import { plainToInstance } from 'class-transformer';
 
 /**
  * Auth service
@@ -26,7 +28,7 @@ export class AuthService {
    * Login user
    * @param loginDto
    */
-  async login(loginDto: LoginDto): Promise<LoginDto> {
+  async login(loginDto: LoginDto): Promise<LoginResDto> {
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email },
     });
@@ -44,18 +46,40 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    return this.getTokens(user) as unknown as LoginDto;
+    const tokens = await this.getTokens(user);
+
+    return plainToInstance(
+      LoginResDto,
+      {
+        ...tokens,
+        user,
+      },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   /**
    * Register user
    * @param registerDto
    */
-  async register(registerDto: RegisterDto): Promise<GetTokenDto> {
+  async register(registerDto: RegisterDto): Promise<LoginResDto> {
     registerDto.password = await hashPassword(registerDto.password);
     const user = await this.userRepository.save(registerDto);
 
-    return this.getTokens(user);
+    const tokens = await this.getTokens(user);
+
+    return plainToInstance(
+      LoginResDto,
+      {
+        ...tokens,
+        user,
+      },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   logout() {
@@ -112,5 +136,13 @@ export class AuthService {
     ]);
 
     return { accessToken, refreshToken };
+  }
+
+  async getUser(id: number): Promise<GetUserResDto> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    return plainToInstance(GetUserResDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 }

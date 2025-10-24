@@ -16,7 +16,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { GetTokenDto } from './dtos/res/login-res.dto';
+import { GetTokenDto, LoginResDto } from './dtos/res/login-res.dto';
+import { GetUserResDto } from './dtos/res';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -27,11 +28,16 @@ export class AuthController {
   @Public()
   @Post('login')
   @ApiOperation({ summary: 'Login', description: 'User login endpoint' })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully logged in.',
+    type: LoginResDto,
+  })
   @ApiBody({ type: LoginDto })
   @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
-  login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto): Promise<LoginResDto> {
     return this.authService.login(loginDto);
   }
 
@@ -42,12 +48,12 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully registered.',
-    type: GetTokenDto,
+    type: LoginResDto,
   })
   @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
-  register(@Body() registerDto: RegisterDto): Promise<GetTokenDto> {
+  async register(@Body() registerDto: RegisterDto): Promise<LoginResDto> {
     return this.authService.register(registerDto);
   }
 
@@ -79,5 +85,20 @@ export class AuthController {
     const { refreshToken, email } = user;
 
     return this.authService.refresh(email, refreshToken);
+  }
+
+  @Get('get-user')
+  @ApiOperation({
+    summary: 'Get current user info',
+    description: 'Get current logged in user information',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the current logged in user information.',
+    type: GetUserResDto,
+  })
+  @ApiGetErrorsResponse()
+  getUser(@User('id') userId: number): Promise<GetUserResDto> {
+    return this.authService.getUser(userId);
   }
 }

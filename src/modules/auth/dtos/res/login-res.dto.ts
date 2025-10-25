@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserItemDto } from './auth-res.dto';
+import { Expose, Type } from 'class-transformer';
 
 export class GetTokenDto {
   @ApiProperty({
@@ -7,6 +9,7 @@ export class GetTokenDto {
     description: 'Access token of the user',
     type: String,
   })
+  @Expose()
   accessToken: string;
 
   @ApiProperty({
@@ -15,7 +18,13 @@ export class GetTokenDto {
     description: 'Refresh token of the user',
     type: String,
   })
+  @Expose()
   refreshToken: string;
 }
 
-export class LoginResDto extends GetTokenDto {}
+export class LoginResDto extends GetTokenDto {
+  @ApiProperty({ type: UserItemDto, description: 'User information' })
+  @Expose()
+  @Type(() => UserItemDto)
+  user: UserItemDto;
+}

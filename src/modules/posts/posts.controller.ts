@@ -21,6 +21,7 @@ import {
 import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
 import { CreatePostDto } from './dto/req/create-post.dto';
 import { PostItemDto } from './dto/res/post-res.dto';
+import { Serialize } from '@interceptors';
 
 @ApiBearerAuth()
 @ApiTags('Posts')
@@ -50,8 +51,9 @@ export class PostsController {
     type: [PostItemDto],
   })
   @ApiGetErrorsResponse()
+  @Serialize(PostItemDto)
   findAll(): Promise<PostItemDto[]> {
-    return this.postsService.getPostList();
+    return this.postsService.findAll();
   }
 
   @Get(':id')
@@ -63,8 +65,9 @@ export class PostsController {
     type: PostItemDto,
   })
   @ApiGetErrorsResponse()
+  @Serialize(PostItemDto)
   findOne(@Param('id') id: string): Promise<PostItemDto> {
-    return this.postsService.getPostDetail(+id);
+    return this.postsService.findOne(+id);
   }
 
   @Patch(':id')

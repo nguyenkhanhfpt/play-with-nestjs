@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from '@app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { NotFoundExceptionFilter } from '@filters/not-found-exception.filter';
@@ -16,11 +16,13 @@ import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { useContainer } from 'class-validator';
 import { setupSwagger } from '@shared/utils';
+import { ResponseTransformInterceptor } from '@interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+  const reflector = app.get(Reflector);
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   const loggerService = app.get(LoggerService);
 
@@ -77,6 +79,9 @@ async function bootstrap() {
     new NotFoundExceptionFilter(loggerService),
     new UnauthorizedExceptionFilter(loggerService),
   );
+
+  // use global interceptors
+  app.useGlobalInterceptors(new ResponseTransformInterceptor(reflector));
 
   // setup swagger
   setupSwagger(app);

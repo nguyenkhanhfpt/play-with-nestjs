@@ -4,8 +4,6 @@ import { Repository } from 'typeorm';
 import { PostEntity } from '@database/entities/post.entity';
 import { CreatePostDto } from './dto/req/create-post.dto';
 import { UpdatePostDto } from './dto/req/update-post.dto';
-import { plainToInstance } from 'class-transformer';
-import { PostItemDto } from './dto/res/post-res.dto';
 
 @Injectable()
 export class PostsService {
@@ -61,21 +59,5 @@ export class PostsService {
 
     await this.postRepository.remove(post);
     return { id };
-  }
-
-  async getPostDetail(id: number): Promise<PostItemDto> {
-    const post = await this.findOne(id);
-
-    return plainToInstance(PostItemDto, post, {
-      excludeExtraneousValues: true,
-    });
-  }
-
-  async getPostList(): Promise<PostItemDto[]> {
-    const posts = await this.findAll();
-
-    return plainToInstance(PostItemDto, posts, {
-      excludeExtraneousValues: true,
-    });
   }
 }

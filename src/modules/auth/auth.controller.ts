@@ -18,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { GetTokenDto, LoginResDto } from './dtos/res/login-res.dto';
 import { GetUserResDto } from './dtos/res';
+import { Serialize } from '@interceptors';
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -37,6 +38,7 @@ export class AuthController {
   @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
+  @Serialize(LoginResDto)
   async login(@Body() loginDto: LoginDto): Promise<LoginResDto> {
     return this.authService.login(loginDto);
   }
@@ -53,6 +55,7 @@ export class AuthController {
   @ApiErrorsResponse({
     excludeUnauthorized: true,
   })
+  @Serialize(LoginResDto)
   async register(@Body() registerDto: RegisterDto): Promise<LoginResDto> {
     return this.authService.register(registerDto);
   }
@@ -81,6 +84,7 @@ export class AuthController {
     type: GetTokenDto,
   })
   @ApiGetErrorsResponse()
+  @Serialize(GetTokenDto)
   refresh(@User() user: any) {
     const { refreshToken, email } = user;
 
@@ -97,6 +101,7 @@ export class AuthController {
     description: 'Returns the current logged in user information.',
     type: GetUserResDto,
   })
+  @Serialize(GetUserResDto)
   @ApiGetErrorsResponse()
   getUser(@User('id') userId: number): Promise<GetUserResDto> {
     return this.authService.getUser(userId);

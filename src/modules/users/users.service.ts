@@ -4,12 +4,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '@database/entities/user.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { PostEntity } from '@database/entities/post.entity';
+import { GetUserPostsResDto } from './dto/get-user-posts-res.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
 
   create(createUserDto: CreateUserDto) {
@@ -46,5 +50,19 @@ export class UsersService {
       relations: relations,
       where,
     });
+  }
+
+  async findAllPosts(userId: number): Promise<GetUserPostsResDto[]> {
+    const posts = await this.postRepository
+      .createQueryBuilder('p')
+      .select(['p.id', 'p.title', 'p.content', 'p.createdAt'])
+      .where('p.userId = :userId', { userId })
+      .orderBy('p.createdAt', 'DESC')
+      .getMany();
+
+    return posts.map((post) => ({
+      ...post,
+      createdAt: post.createdAt.toISOString(),
+    }));
   }
 }

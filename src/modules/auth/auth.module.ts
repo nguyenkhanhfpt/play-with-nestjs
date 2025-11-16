@@ -9,11 +9,12 @@ import { UserEntity } from '@database/entities/user.entity';
 import { IsExistEmailValidator } from '@shared/validators';
 import { UsersModule } from '@modules/users/users.module';
 import { UsersService } from '@modules/users/users.service';
+import { PostEntity } from '@database/entities/post.entity';
 
 @Module({
   imports: [
     JwtModule.register({}),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, PostEntity]),
     UsersModule,
   ],
   controllers: [AuthController],

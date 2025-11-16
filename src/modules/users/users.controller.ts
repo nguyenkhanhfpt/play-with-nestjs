@@ -18,6 +18,8 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ApiErrorsResponse, ApiGetErrorsResponse } from '@decorators';
+import { GetUserPostsResDto } from './dto/get-user-posts-res.dto';
+import { Serialize } from '@interceptors';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -78,5 +80,18 @@ export class UsersController {
   @ApiGetErrorsResponse()
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Get(':id/posts')
+  @ApiOperation({ summary: 'Get all posts by user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of all posts by user.',
+    type: [GetUserPostsResDto],
+  })
+  @ApiGetErrorsResponse()
+  @Serialize(GetUserPostsResDto)
+  async findAllPosts(@Param('id') id: number): Promise<GetUserPostsResDto[]> {
+    return this.usersService.findAllPosts(id);
   }
 }
